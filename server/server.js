@@ -48,7 +48,7 @@ app.get("/todos/:id", (req, res) => {
         }
         res.send({todo});
     }).catch((e) => {
-        res.status(404).send("error search");
+        res.status(400).send("error search");
     });
     // findById
     //success - send it back
@@ -56,7 +56,24 @@ app.get("/todos/:id", (req, res) => {
     //error - send back 404 and empty array
 
 
-})
+});
+
+app.delete("/todos/:id", (req, res) => {
+    var id = req.params.id;
+    
+    if(!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    Todo.findByIdAndRemove(id).then((todo) => {
+        if(!todo) {
+            return res.status(404).send();
+        }
+        res.send({todo});
+    }).catch((e) => {
+        res.status(400).send();
+    });  
+});
 
 app.listen(port,() => {
     console.log(`Started on Port ${port}`);
